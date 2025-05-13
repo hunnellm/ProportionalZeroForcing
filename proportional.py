@@ -1,34 +1,40 @@
-def abzerosgame(g,F=[],alpha=1,beta=1):
+def abzerosgame(g,B=[],alpha=1,beta=1):
 	'''
 	Returns a dictionary with the weights of vertices after applying proportional color change rule as much as possible
 	
 	g a graph
-	F a set of initially filled vertices
+	B a set of initially filled vertices
 	alpha the proportion of weight a filled vertex transfers to a vertex it forces
 	beta the threshold to be filled
 	
 	
 	'''
-	
-	unfilled_vertices=set(g.vertices()).difference(set(F)) # current unfilled/partially filled vertices
-	filled_vertices=set(F) # current filled vertices
-
+	unfilled_vertices=set(g.vertices()).difference(set(B)) # current unfilled/partially filled vertices
+	filled_vertices=set(B) # current filled vertices
 	again=1 # iterate again or not
 	weights={} # initialize weights
 	for v in g.vertices():
 		weights[v]=0
 	for v in filled_vertices:
 		weights[v]=1
-	for x in unfilled_vertices:
-		N=set(g.neighbors(x))# all neighbors of white vertex
-		D=N.intersection(filled_vertices) # set of white neighbors
-		for d in D:
-				P=set(g.neighbors(d)).difference(filled_vertices)#unfilled or partially filled neighbors
-				if len(P)==1:
-					weights[x]=weights[x]+alpha*weights[d]
-		if weights[x]>=beta:
-			filled_vertices.add(x)
+	while again==1:
+		again=0
+		UF=unfilled_vertices.copy()
+		F=filled_vertices.copy()
+		unfilled_vertices2=unfilled_vertices.copy()
+		for x in F:
+			N=set(g.neighbors(x))# all neighbors of filled vertex
+			D=N.intersection(unfilled_vertices2) # set of unfilled neighbors
+			if len(D)==1:
+				again=1
+				for d in D:
+					weights[d]=weights[d]+alpha*weights[x]
+					if weights[d]>=beta:
+						filled_vertices.add(d)
+						unfilled_vertices.discard(d)
+						break
 	return weights
+
 
 def is_ab_forcing_set(g,S=[],alpha=1,beta=1):
 	'''
