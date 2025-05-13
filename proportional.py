@@ -13,6 +13,7 @@ def abzerosgame(g,B=[],alpha=1,beta=1):
 	filled_vertices=set(B) # current filled vertices
 	again=1 # iterate again or not
 	weights={} # initialize weights
+	collected_forces=[]
 	for v in g.vertices():
 		weights[v]=0
 	for v in filled_vertices:
@@ -24,11 +25,13 @@ def abzerosgame(g,B=[],alpha=1,beta=1):
 		unfilled_vertices2=unfilled_vertices.copy()
 		for x in F:
 			N=set(g.neighbors(x))# all neighbors of filled vertex
-			D=N.intersection(unfilled_vertices2) # set of unfilled neighbors
-			if len(D)==1:
+			D=N.intersection(UF) # set of unfilled neighbors
+			if len(D)==1 and [x,next(iter(D))] not in collected_forces:
 				again=1
 				for d in D:
+					#print(x," forcing ",d)
 					weights[d]=weights[d]+alpha*weights[x]
+					collected_forces.append([x,d])
 					if weights[d]>=beta:
 						filled_vertices.add(d)
 						unfilled_vertices.discard(d)
