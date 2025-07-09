@@ -38,12 +38,14 @@ def abzerosgame(g,B=[],alpha=1,beta=1):
 						break
 	return weights
 	
-def abzerosgame_var(g,B=[]):
+def abzerosgame_var(g,B=[],alpha_values=False,a=1):
     '''
-    Returns a dictionary with the weights as function of alpha after applying proportional color change rule as much as possible
+    Returns a dictionary with the weights of vertices after applying proportional color change rule as much as possible
     
     g a graph
     B a set of initially filled vertices
+    alpha_values determines whether to evaluate the polynomial at a specific value of alpha
+    a the value of alpha at which to evaluate the weights if alpha_values=True
     
     
     '''
@@ -75,9 +77,17 @@ def abzerosgame_var(g,B=[]):
                     #if weights[d]>=beta:
                     filled_vertices.add(d)
                     unfilled_vertices.discard(d)
-                    break
+                    #break
+    if alpha_values==True:
+        alpha_weights={}
+        for v in weights:
+            if weights[v]==1:
+                alpha_weights[v]=weights[v]
+            else:
+                print(Poly(weights[v]))
+                alpha_weights[v] = Poly(weights[v]).eval(a)
+        return alpha_weights        
     return weights
-
 def is_ab_forcing_set(g,S=[],alpha=1,beta=1):
 	'''
 	Returns boolean whether S is an alpha,beta zero forcing set of g
