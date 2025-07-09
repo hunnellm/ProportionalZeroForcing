@@ -84,7 +84,7 @@ def abzerosgame_var(g,B=[],alpha_values=False,a=1):
             if weights[v]==1:
                 alpha_weights[v]=weights[v]
             else:
-                print(Poly(weights[v]))
+                #print(Poly(weights[v]))
                 alpha_weights[v] = Poly(weights[v]).eval(a)
         return alpha_weights        
     return weights
