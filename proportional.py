@@ -37,7 +37,46 @@ def abzerosgame(g,B=[],alpha=1,beta=1):
 						unfilled_vertices.discard(d)
 						break
 	return weights
-
+	
+def abzerosgame_var(g,B=[]):
+    '''
+    Returns a dictionary with the weights as function of alpha after applying proportional color change rule as much as possible
+    
+    g a graph
+    B a set of initially filled vertices
+    
+    
+    '''
+    from sympy import Symbol, Poly
+    alpha=Symbol('x',domain=Interval(0,1))
+    unfilled_vertices=set(g.vertices()).difference(set(B)) # current unfilled/partially filled vertices
+    filled_vertices=set(B) # current filled vertices
+    again=1 # iterate again or not
+    weights={} # initialize weights
+    collected_forces=[]
+    for v in g.vertices():
+        weights[v]=0
+    for v in filled_vertices:
+        weights[v]=1
+    while again==1:
+        again=0
+        UF=unfilled_vertices.copy()
+        F=filled_vertices.copy()
+        unfilled_vertices2=unfilled_vertices.copy()
+        for x in F:
+            N=set(g.neighbors(x))# all neighbors of filled vertex
+            D=N.intersection(UF) # set of unfilled neighbors
+            if len(D)==1 and [x,next(iter(D))] not in collected_forces:
+                again=1
+                for d in D:
+                    #print(x," forcing ",d)
+                    weights[d]=weights[d]+alpha*weights[x]
+                    collected_forces.append([x,d])
+                    #if weights[d]>=beta:
+                    filled_vertices.add(d)
+                    unfilled_vertices.discard(d)
+                    break
+    return weights
 
 def is_ab_forcing_set(g,S=[],alpha=1,beta=1):
 	'''
