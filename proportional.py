@@ -46,7 +46,7 @@ def abzerosgame_var(g,B=[],alpha_values=False,a=1):
     B a set of initially filled vertices
     alpha_values determines whether to evaluate the polynomial at a specific value of alpha
     a the value of alpha at which to evaluate the weights if alpha_values=True
-    
+    CAUTION: This code doesn't know whether a final active vertex may need to perform a final force.  For example, look at C_7 with B=[0,1,3], can't determine whether vertex 4 should force 5 or not
     
     '''
     from sympy import Symbol, Poly
